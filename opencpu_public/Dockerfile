@@ -21,3 +21,5 @@ RUN mkdir /opt/data && \
   mkdir /opt/data/cwb/indexed_corpora
   
 ENV CORPUS_REGISTRY=/opt/data/cwb/registry
+
+RUN sed -i 's/"preload":\s\["lattice"\]/"preload": ["polmineR"]/' /etc/opencpu/server.conf
