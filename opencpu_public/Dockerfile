@@ -1,4 +1,4 @@
-FROM opencpu/ubuntu-20.04
+FROM opencpu/ubuntu-18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog bison flex  libglib2.0-dev libpcre3 libpcre3-dev libncurses5-dev libncursesw5-dev libcurl4-openssl-dev libssl-dev && \
     rm -rf /var/lib/apt/lists/* && apt clean
