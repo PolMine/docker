@@ -42,7 +42,7 @@ RUN cd /usr/local/bin && ln -s ~/r-devel/build/bin/Rscript Rscript-devel
 # Note that the only entry on .libPaths() is $RTOP/r-devel/build/library, 
 # so this is where packages will be installed.
 
-RUN Rscript-devel -e 'install.packages("polmineR", repos = "https://cran.uni-muenster.de/")'
+RUN Rscript-devel -e 'install.packages("polmineR", repos = c("https://cran.rstudio.com/", "https://polmine.github.io/drat/"))'
 
 RUN Rscript-devel -e 'install.packages(pkgs = c("markdown", "rmarkdown", "htmltools", "openxlsx", "sendmailR", "shiny", "shinythemes", "miniUI", "rhandsontable", "testthat", "tidytext", "covr", "igraph", "NLP", "httr", "curl"), repos = "https://cran.uni-muenster.de/")'
 RUN Rscript-devel -e 'install.packages("webshot", repos = "https://cran.uni-muenster.de/")'
