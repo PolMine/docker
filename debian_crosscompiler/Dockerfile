@@ -8,7 +8,7 @@
 #                                                                     #
 #######################################################################
 
-from debian:latest
+from ubuntu:trusty
 
 RUN apt-get update && \
   apt-get -y upgrade && \
@@ -277,6 +277,8 @@ RUN cd /root && \
 
 ############### libcl #############################
 
+ARG START_FROM_HERE=00002
+
 RUN cd /root && \
   git clone https://github.com/PolMine/libcl.git && \
   cd /root/libcl && \
@@ -284,17 +286,19 @@ RUN cd /root && \
 
 ############### utils static library 64 bit ########################
 
+
 RUN cd /root && \
   git clone https://github.com/PolMine/RcppCWB.git && \
   cd /root/RcppCWB && \
-  git checkout cwb_encode && \
-  git pull origin cwb_encode 
+  git checkout dev && \
+  git pull origin dev
   
 WORKDIR /root/RcppCWB/src/cwb/utils
 
 RUN x86_64-w64-mingw32-gcc -c -o _cwb_huffcode.o -O2 -Wall -static  \
   -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
   -I/root/RcppCWB/src/cwb/cl                                                   \
+  -I/usr/share/mingw-w64/include \
   -I$MINGW_OUTPUT/include                                      \
   _cwb_huffcode.c
 
@@ -313,6 +317,7 @@ RUN x86_64-w64-mingw32-gcc -c -o _cwb_encode.o -O2 -Wall -static  \
 RUN x86_64-w64-mingw32-gcc -c -o _cwb_makeall.o -O2 -Wall -static  \
   -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
   -I/root/RcppCWB/src/cwb/cl                                                   \
+  -I/usr/share/mingw-w64/include \
   -I$MINGW_OUTPUT/include                                      \
   _cwb_makeall.c
   
