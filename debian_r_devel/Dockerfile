@@ -2,6 +2,8 @@ from debian:latest
 
 # Install R from mirror. Why? We build R-devel later on, but this may ensure presence of dependencies
 
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
+
 RUN apt-get update && apt-get install -y gnupg ca-certificates apt-utils
 RUN echo "deb https://cran.uni-muenster.de/bin/linux/debian buster-cran35/" >> /etc/apt/sources.list
 RUN apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF' && \
