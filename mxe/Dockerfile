@@ -1,5 +1,7 @@
 from debian:latest
 
+RUN dpkg --add-architecture i386
+
 RUN apt-get update && apt-get upgrade && apt-get install -y \
     autoconf \
     automake \
