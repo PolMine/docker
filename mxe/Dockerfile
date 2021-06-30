@@ -1,6 +1,6 @@
 from debian:latest
 
-RUN apt-get install -y \
+RUN apt-get update && apt-get upgrade && apt-get install -y \
     autoconf \
     automake \
     autopoint \
