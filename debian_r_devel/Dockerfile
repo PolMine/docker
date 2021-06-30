@@ -2,13 +2,8 @@ from debian:latest
 
 # Install R from mirror. Why? We build R-devel later on, but this may ensure presence of dependencies
 
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
-
 RUN apt-get update && apt-get install -y gnupg ca-certificates apt-utils
-RUN echo "deb https://cran.uni-muenster.de/bin/linux/debian buster-cran35/" >> /etc/apt/sources.list
-RUN apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF' && \
-  apt-get update && \
-  apt-get install -y r-base r-base-dev
+RUN apt-get update && apt-get install -y r-base r-base-dev
 
 
 # Install dependencies (for R packages installed later on)
@@ -16,7 +11,7 @@ RUN apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2A
 RUN apt-get update -y && apt-get install -y bison flex libglib2.0-dev libpcre3 libpcre3-dev libncurses5-dev
 RUN apt-get update -y && apt-get install -y libcurl4-openssl-dev libssl-dev
 RUN apt-get update -y && apt-get install -y libxml2 libxml2-dev
-RUN apt-get install -y libprotobuf-dev protobuf-compiler
+RUN apt-get install -y libprotobuf-dev protobuf-compiler libpcre2-dev pcre2-utils
 RUN apt-get install -y libsodium-dev openjdk-11-jdk default-jre
 
 
@@ -69,4 +64,8 @@ RUN apt-get install -y pandoc pandoc-citeproc
 
 RUN ln -s /usr/lib/R/library/grDevices/libs/cairo.so /root/r-devel/build/library/grDevices/libs/cairo.so
 
-RUN echo "export LC_ALL=en_US.UTF-8" >> ~/.bashrc && source ~/.bashrc
+RUN apt-get -y install locales
+RUN locale-gen en_US.UTF-8
+RUN update-locale LANG=en_US.UTF-8
+RUN echo "LANG=en_US.UTF-8" >> ~/.Renviron
+
