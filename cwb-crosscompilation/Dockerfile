@@ -1,3 +1,5 @@
+# docker run -it --rm -v ~/Lab/github/libcl:/libcl cwbcross:latest
+
 From debian:latest
 
 RUN apt-get update && \
@@ -114,6 +116,67 @@ RUN sed -i -E "s/i586/x86/" /root/cwb-3.4.22/config/platform/mingw-cross
 RUN sed -i -E "s/export\s*PKG_CONFIG_PATH=.+MINGW_CROSS_HOME.\/lib\/pkgconfig\s*;//g" /root/cwb-3.4.22/definitions.mk
 RUN sed -i -E "s/\s+\\$\\(MINGW_CROSS_HOME\\)\/bin\/pcre-config/ pcre-config/g" /root/cwb-3.4.22/definitions.mk
 
+RUN sed -i -E "s/^all\\:.*PROGRAMS.$/all: libcqp\\.a/g" /root/cwb-3.4.22/cqp/Makefile
+RUN printf '\nlibcqp.a: $(OBJS) $(CQI_OBJS)\n\t$(RM) $@\n\t$(AR) $@ $^\n' >> /root/cwb-3.4.22/cqp/Makefile
 
 ENV PKG_CONFIG_PATH=/opt/glib/lib/pkgconfig  
 RUN make clean && make depend && make all
+
+
+########### COMPILE utils ###############
+
+RUN cd /root && \
+  git clone https://github.com/PolMine/RcppCWB.git && \
+  cd /root/RcppCWB && \
+  git checkout dev && \
+  git pull origin dev
+
+WORKDIR /root/RcppCWB/src/cwb/utils
+
+RUN x86_64-w64-mingw32-gcc -c -o _cwb_huffcode.o -O2 -Wall -static  \
+  -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
+  -I/root/RcppCWB/src/cwb/cl                                                   \
+  -I/usr/share/mingw-w64/include \
+  -I$MINGW_OUTPUT/include                                      \
+  _cwb_huffcode.c
+
+RUN x86_64-w64-mingw32-gcc -c -o _cwb_compress_rdx.o -O2 -Wall -static  \
+  -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
+  -I/root/RcppCWB/src/cwb/cl \
+  -I$MINGW_OUTPUT/include                                      \
+  _cwb_compress_rdx.c
+
+RUN x86_64-w64-mingw32-gcc -c -o _cwb_encode.o -O2 -Wall -static  \
+  -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
+  -I/root/RcppCWB/src/cwb/cl \
+  -I$MINGW_OUTPUT/include                                      \
+  _cwb_encode.c
+
+RUN x86_64-w64-mingw32-gcc -c -o _cwb_makeall.o -O2 -Wall -static  \
+  -D__MINGW__ -DEMULATE_SETENV -DG_OS_WIN32                                       \
+  -I/root/RcppCWB/src/cwb/cl                                                   \
+  -I/usr/share/mingw-w64/include \
+  -I$MINGW_OUTPUT/include                                      \
+  _cwb_makeall.c
+  
+RUN x86_64-w64-mingw32-ar cq libcwb.a _cwb_makeall.o _cwb_huffcode.o _cwb_compress_rdx.o _cwb_encode.o && \
+  x86_64-w64-mingw32-ranlib libcwb.a
+
+
+##### 32 bit ############
+
+RUN export MINGW_OUTPUT_32BIT=`i686-w64-mingw32-gcc --print-search-dirs | grep ^install | sed -E 's/install:\s(.*?)/\1/'`
+
+
+
+######### Put crosscompiled files into libcl repo ########
+
+RUN cd /root && \
+  git clone https://github.com/PolMine/libcl.git && \
+  cd /root/libcl && \
+  git checkout dev
+
+RUN cp /root/cwb-3.4.22/cl/libcl.a /root/libcl/lib/x64/libcl.a
+RUN cp /root/cwb-3.4.22/cqp/libcqp.a /root/libcl/lib/x64/libcqp.a
+RUN cp /root/RcppCWB/src/cwb/utils/libcwb.a /root/libcl/lib/x64/libcwb.a
+
