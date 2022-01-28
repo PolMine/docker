@@ -1,6 +1,7 @@
 from debian:latest
 
 RUN dpkg --add-architecture i386
+RUN dpkg --add-architecture amd64
 
 RUN apt-get update && apt-get upgrade && apt-get install -y \
     autoconf \
