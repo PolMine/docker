@@ -22,3 +22,14 @@ RUN Rscript -e 'install.packages(pkgs = c("polmineR", "devtools", "markdown", "r
 RUN apt-get install -y git
 RUN cd ~ && mkdir git && cd git && git clone https://github.com/PolMine/polmineR.git
 
+RUN mkdir /opt/cwb && \
+  mkdir /opt/cwb/registry && \
+  mkdir /opt/cwb/registry_tmp && \
+  mkdir /opt/cwb/indexed_corpora 
+
+ENV CORPUS_REGISTRY=/opt/cwb/registry
+RUN echo "CORPUS_REGISTRY=/opt/cwb/registry" > ~/.Renviron
+
+ENTRYPOINT cp /opt/cwb/registry_tmp/* /opt/cwb/registry/ && \ 
+  for file in $(ls /opt/cwb/registry); do sed -i -r 's#^HOME\s.*/(.*?)#HOME /opt/cwb/indexed_corpora/\1#g' /opt/cwb/registry/$file; done && \
+  /bin/bash
