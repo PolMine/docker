@@ -1,4 +1,4 @@
-FROM opencpu/ubuntu-18.04
+FROM opencpu:ubuntu-22.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
@@ -9,8 +9,12 @@ RUN apt-get update -y && apt-get install -y bison \
   libpcre3-dev \
   libncurses5-dev \
   libncursesw5-dev \ 
-  libcurl4-openssl-dev \
-  libssl-dev
+  libcurl4-gnutls-dev \
+  libssl-dev \
+  libxml2-dev \
+  libsodium-dev \
+  librdf0-dev \
+  libprotobuf-dev
 
 RUN Rscript -e 'install.packages(pkgs = c("polmineR", "remotes"), repos = "https://cran.rstudio.com/")'
 RUN Rscript -e 'remotes::install_github("PolMine/polmineR", ref = "dev", build_vignettes = FALSE)'
