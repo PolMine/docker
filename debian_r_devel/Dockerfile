@@ -1,4 +1,4 @@
-from debian:latest
+FROM debian:latest
 
 # Install R from mirror. Why? We build R-devel later on, but this may ensure presence of dependencies
 
@@ -12,7 +12,7 @@ RUN apt-get update -y && apt-get install -y bison flex libglib2.0-dev libpcre3 l
 RUN apt-get update -y && apt-get install -y libcurl4-openssl-dev libssl-dev
 RUN apt-get update -y && apt-get install -y libxml2 libxml2-dev
 RUN apt-get install -y libprotobuf-dev protobuf-compiler libpcre2-dev pcre2-utils
-RUN apt-get install -y libsodium-dev openjdk-11-jdk default-jre
+RUN apt-get install -y libsodium-dev openjdk-17-jdk default-jre
 
 
 # Install tex
@@ -60,7 +60,8 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN echo "LANG=en_US.UTF-8" > /etc/locale.conf
 RUN locale-gen en_US.UTF-8
 
-RUN apt-get install -y pandoc pandoc-citeproc
+RUN apt-get install -y pandoc
+# RUN apt-get install -y pandoc-citeproc
 
 RUN ln -s /usr/lib/R/library/grDevices/libs/cairo.so /root/r-devel/build/library/grDevices/libs/cairo.so
 

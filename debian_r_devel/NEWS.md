@@ -1,3 +1,7 @@
+[2025-03-25]
+  - update from opendjdk 11 to openjdk 17
+  - pandoc-citeproc temporarily commented out (deprecated or not yet available for Debian bookworm)
+
 [2021-06-25] 
   - setting locale adapted from bignlp docker file
   - no key for R mirror
