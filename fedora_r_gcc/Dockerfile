@@ -1,8 +1,8 @@
-from fedora:40
+from fedora:44
 
 RUN yum install -y R
 
-# RUN yum install -y glib*
+RUN yum install -y glib2 glib2-devel pkgconf-pkg-config
 RUN yum install -y pcre2*
 RUN yum install -y ncurses
 RUN yum install -y bison flex
